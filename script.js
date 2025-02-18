@@ -1,8 +1,8 @@
 /***************************************************
  * Global variables & fallback relays
  ***************************************************/
-let pubkey = null;           // User's pubkey (for replies)
-let userRelays = {};         // Relay definitions from extension (URL -> {read: bool, write: bool})
+let pubkey = null;           // For replying (logged-in user's pubkey)
+let userRelays = {};         // Relay definitions from extension (if any)
 let relayConnections = {};   // WebSocket connections to each relay URL
 
 // Hard-coded article parameters
@@ -13,15 +13,16 @@ const ARTICLE_PUBKEY = "e88a691e98d9987c964521dff60025f60700378a4879180dcbbb4a50
 let articleEvent = null;
 
 /***************************************************
- * Fallback relays (if no user relays are provided)
+ * Fallback relays: Primal relay is now first.
  ***************************************************/
 const FALLBACK_RELAYS = {
+  "wss://relay.primal.net": { read: true, write: true },
   "wss://relay.damus.io": { read: true, write: true },
   "wss://relay.snort.social": { read: true, write: true }
 };
 
 /***************************************************
- * On page load: Load the article event
+ * On page load: Load the article event.
  ***************************************************/
 document.addEventListener("DOMContentLoaded", () => {
   loadArticle();
@@ -62,10 +63,9 @@ function connectToRelays(relays) {
 
 /***************************************************
  * Load Article:
- *   Query relays for an event with:
- *     kind: 30023, tag "d" equals ARTICLE_SLUG,
- *     and from author ARTICLE_PUBKEY.
- *   Render its content as the article.
+ *   Query relays for an event (kind 30023) with:
+ *     tag "d" equals ARTICLE_SLUG and from ARTICLE_PUBKEY.
+ *   Then render the article.
  ***************************************************/
 function loadArticle() {
   let relays = Object.keys(userRelays).length > 0 ? userRelays : FALLBACK_RELAYS;
@@ -133,7 +133,7 @@ function loadArticle() {
 
 /***************************************************
  * Render Article:
- *   Render the article content into the article container.
+ *   Render the article content using marked.js.
  ***************************************************/
 function renderArticle(ev) {
   document.getElementById("article-content").innerHTML = marked.parse(ev.content);
@@ -141,8 +141,8 @@ function renderArticle(ev) {
 
 /***************************************************
  * Load Author Profile:
- *   Query relays for a profile event (kind 0) from the author pubkey.
- *   Then update the #author-info element with the author's avatar and name.
+ *   Query relays for a profile event (kind 0) from the author.
+ *   Then update the #author-info element.
  ***************************************************/
 function loadAuthorProfile(authorPubkey) {
   const subId = "loadProfile-" + Math.random().toString(36).slice(2);
@@ -200,7 +200,7 @@ function loadAuthorProfile(authorPubkey) {
 
 /***************************************************
  * Update Author Info:
- *   Populate the #author-info element with the author's name and avatar.
+ *   Populate the #author-info element with the author's avatar and name.
  ***************************************************/
 function updateAuthorInfo(profile) {
   let html = "";
