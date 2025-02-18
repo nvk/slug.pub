@@ -2,21 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>slug.pub — Medium-Style Nostr Article</title>
+  <title>slug.pub — A Nostr-Powered Article Viewer</title>
 
-  <!-- Bootstrap CSS from CDN (for layout, modals, etc.) -->
+  <!-- Bootstrap CSS -->
   <link 
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
     rel="stylesheet"
   />
   
-  <!-- Font Awesome Icons (optional) -->
+  <!-- Font Awesome Icons -->
   <link
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
   />
   
-  <!-- Merriweather (serif) + Roboto (sans-serif) fonts -->
+  <!-- Merriweather (serif) + Roboto (sans-serif) -->
   <link 
     rel="preconnect" 
     href="https://fonts.googleapis.com"
@@ -26,150 +26,89 @@
     href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;700&family=Roboto&display=swap"
   />
 
-  <!-- bech32 library (to decode npub) -->
-  <script src="https://unpkg.com/bech32@1.1.3/dist/index.umd.min.js"></script>
-
   <!-- Markdown Renderer -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  
-  <!-- Our main JavaScript -->
+
+  <!-- Main JavaScript -->
   <script src="./script.js" defer></script>
-  
+
   <style>
-    /* Global Body */
+    /* Global Styles */
     body {
       margin: 0;
       padding: 0;
-      background: #fff;
+      background: #fff; 
       color: #2F2F2F;
       font-family: 'Merriweather', serif;
       font-size: 18px;
       line-height: 1.75;
     }
-    
+
     /* Navbar */
     .navbar {
       font-family: 'Roboto', sans-serif;
       border-bottom: 1px solid #e2e2e2;
-      background-color: #fff;
+      background-color: #fff !important;
       padding: 0.75rem 1rem;
-      position: relative;
     }
     .navbar-brand {
       font-family: 'Merriweather', serif;
       font-weight: 700;
       font-size: 1.4rem;
-      margin-right: 2rem;
       color: #000 !important;
     }
-    
-    /* Author Info (top right) */
-    .author-info {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .author-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
+
+    /* Banner Image */
+    .article-banner {
+      width: 100%;
+      max-height: 400px;
       object-fit: cover;
+      display: block;
+      margin-bottom: 1.5rem;
     }
-    .author-name {
-      font-family: 'Roboto', sans-serif;
-      font-weight: 500;
-      font-size: 0.95rem;
-    }
-    
-    /* Hero Header (Article Header) */
-    .hero-header {
-      padding: 3rem 1rem 2rem 1rem;
-      text-align: center;
-      position: relative;
-    }
-    .hero-header h1 {
-      font-family: 'Merriweather', serif;
-      font-weight: 700;
-      font-size: 3rem;
-      margin-bottom: 1rem;
-    }
-    .hero-header p.lead {
-      font-size: 1.25rem;
-      color: #757575;
-    }
-    
-    /* Medium-like Container */
-    .medium-container {
-      max-width: 750px;
-      margin: 0 auto;
-    }
-    
-    /* Article Content */
-    .article-content {
-      margin-bottom: 2rem;
-    }
-    .article-content p {
-      margin-bottom: 1rem;
-    }
-    .article-content h2,
-    .article-content h3 {
-      margin-top: 1.5rem;
-      margin-bottom: 1rem;
-    }
-    
-    /* Replies Section */
-    .reply-section {
-      border-top: 1px solid #e2e2e2;
-      padding-top: 1rem;
-      margin-top: 2rem;
-    }
-    .reply-list .reply {
-      border-bottom: 1px solid #e2e2e2;
-      padding: 0.75rem 0;
-    }
-    
-    /* Reply Editor */
-    #reply-editor {
+
+    /* Author Info */
+    .author-box {
+      text-align: right;
+      font-size: 0.9rem;
+      color: #555;
       margin-top: 1rem;
     }
-    #reply-text {
-      border: 1px solid #e2e2e2;
-      border-radius: 4px;
-      padding: 0.75rem;
+    .author-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin-left: 10px;
+    }
+
+    /* Article Content */
+    .article-container {
+      max-width: 750px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+    .article-title {
       font-family: 'Merriweather', serif;
-      resize: vertical;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
     }
-    
-    /* Buttons */
-    .btn {
-      border-radius: 20px;
-      font-family: 'Roboto', sans-serif;
-      font-size: 0.9rem;
-      padding: 0.5rem 1.25rem;
+    .article-subtitle {
+      font-size: 1rem;
+      color: #757575;
+      margin-bottom: 1.5rem;
     }
-    .btn-success {
-      background-color: #000 !important;
-      border-color: #000 !important;
+
+    /* Responsive Images */
+    .article-content img {
+      max-width: 100%;
+      width: 100%;
+      height: auto;
+      display: block;
+      margin: 1.5rem 0;
+      border-radius: 8px;
     }
-    .btn-success:hover {
-      background-color: #333 !important;
-      border-color: #333 !important;
-    }
-    
-    /* JSON Preview Modal */
-    .modal-content {
-      border-radius: 0;
-    }
-    .modal-header, .modal-footer {
-      border-color: #e2e2e2;
-    }
-    .table > :not(caption) > * > * {
-      border-color: #e2e2e2;
-    }
-    
+
     /* Footer */
     footer {
       border-top: 1px solid #e2e2e2;
@@ -180,117 +119,85 @@
       color: #757575;
       font-size: 0.9rem;
     }
-    footer a {
-      color: inherit;
-      text-decoration: none;
+
+    /* Login Button */
+    .login-btn {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 1rem;
+      display: inline-flex;
+      align-items: center;
+    }
+    .login-btn i {
+      margin-right: 5px;
+    }
+
+    /* Responsive Tweaks */
+    @media (max-width: 768px) {
+      .article-container {
+        padding: 1rem;
+      }
+      .article-title {
+        font-size: 2rem;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- NAVBAR -->
-  <nav class="navbar navbar-expand-lg">
-    <div class="container position-relative">
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container">
       <a class="navbar-brand" href="#">slug.pub <small>very-beta</small></a>
-      <button 
-        class="navbar-toggler" 
-        type="button" 
-        data-bs-toggle="collapse" 
-        data-bs-target="#navbarNav"
-        aria-controls="navbarNav" 
-        aria-expanded="false" 
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <!-- No extra nav links -->
-      </div>
-      <!-- Author Info (populated by script.js) -->
-      <div class="author-info" id="author-info">
-        <!-- Filled with author avatar & name -->
-      </div>
     </div>
   </nav>
 
-  <!-- HERO / ARTICLE HEADER -->
-  <header class="hero-header">
-    <div class="medium-container">
-      <h1 id="article-title">[Article Title]</h1>
-      <p class="lead" id="article-subtitle">[Subtitle or brief description]</p>
+  <!-- Main Article Container -->
+  <div class="article-container">
+    
+    <!-- Banner Image -->
+    <img id="article-banner" class="article-banner" src="" alt="Article Banner" style="display: none;">
+    
+    <!-- Author Info -->
+    <div class="author-box" id="author-box">
+      <span id="author-name">Loading author...</span>
+      <img id="author-avatar" class="author-avatar" src="" alt="Author Avatar">
     </div>
-  </header>
 
-  <!-- MAIN ARTICLE CONTENT -->
-  <main class="medium-container article-content" id="article-content">
-    <!-- The article event content will be loaded here from relays -->
-  </main>
+    <!-- Article Title -->
+    <h1 class="article-title" id="article-title">[Article Title]</h1>
+    <p class="article-subtitle" id="article-subtitle">[Subtitle or brief description]</p>
 
-  <!-- REPLIES SECTION -->
-  <section class="medium-container reply-section">
-    <h4>Replies</h4>
-    <div id="reply-list" class="reply-list">
-      <!-- Existing replies will be rendered here -->
+    <!-- Article Content -->
+    <div class="article-content" id="article-content">
+      <!-- Markdown content will be inserted here -->
     </div>
-    <div id="reply-form" class="mt-4">
-      <button id="login-reply-btn" class="btn btn-primary">
-        <i class="fa fa-sign-in"></i> Login to Reply
-      </button>
-      <div id="reply-editor" class="d-none">
-        <textarea id="reply-text" class="form-control" rows="3" placeholder="Write your reply here..."></textarea>
-        <button id="submit-reply-btn" class="btn btn-success mt-2">
-          <i class="fa fa-paper-plane"></i> Submit Reply
-        </button>
-      </div>
-    </div>
-  </section>
 
-  <!-- JSON Preview Modal -->
-  <div class="modal fade" id="jsonModal" tabindex="-1" aria-labelledby="jsonModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="jsonModalLabel">Event JSON Preview</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <p class="text-muted" style="font-family: 'Roboto', sans-serif;">
-            This is the raw event data that will be signed and published:
-          </p>
-          <pre id="jsonPreview" class="json-preview"></pre>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-            <i class="fa fa-times"></i> Cancel
-          </button>
-          <button type="button" class="btn btn-primary" id="confirmPublishBtn">
-            <i class="fa fa-check"></i> Confirm & Publish
-          </button>
-        </div>
-      </div>
-    </div>
+    <!-- Replies Section -->
+    <hr>
+    <h3>Replies</h3>
+    <button class="login-btn" id="login-btn">
+      <i class="fa fa-sign-in"></i> Login to Reply
+    </button>
   </div>
 
-  <!-- (No Outbox/Drafts modal in display-only project) -->
-
-  <!-- FOOTER -->
+  <!-- Footer -->
   <footer>
-    &copy; <span id="year"></span> 
-    <a href="#" class="text-decoration-none text-reset">slug.pub</a> • Beta software, no warranty provided.
+    &copy; <span id="year"></span> <a href="#" class="text-decoration-none text-reset">slug.pub</a> • Beta software, no warranty provided.
   </footer>
 
-  <!-- Bootstrap JS + Tooltip Initialization -->
+  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Auto-Load Article on Page Load -->
   <script>
     document.getElementById('year').innerText = new Date().getFullYear();
     document.addEventListener("DOMContentLoaded", function() {
-      var tooltipTriggerList = [].slice.call(
-        document.querySelectorAll('[data-bs-toggle="tooltip"]')
-      );
-      tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-      });
+      loadArticle();  // Auto-fetch article when page loads
     });
   </script>
+
 </body>
 </html>
